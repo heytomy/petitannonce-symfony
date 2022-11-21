@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use DateTime;
+use App\Entity\Annonce;
 use Doctrine\Persistence\ManagerRegistry; 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AnnonceController extends AbstractController
 {
@@ -13,7 +15,7 @@ class AnnonceController extends AbstractController
         $repository = $doctrine()->getRepository(Annonce::class);
     }
     /**
- * @Route("/annonce/new")
+ * @Route("/annonce/new", name="new_annonce")
  */
     public function new(ManagerRegistry $doctrine){
     $annonce = new Annonce();
@@ -23,7 +25,7 @@ class AnnonceController extends AbstractController
         ->setPrice(10)
         ->setStatus(Annonce::STATUS_BAD)
         ->setSold(false)
-    ;
+        ;
 
     // On récupère l'EntityManager 
     $em = $doctrine->getManager();
@@ -31,5 +33,7 @@ class AnnonceController extends AbstractController
     $em->persist($annonce);
     // On envoie tout ce qui a été persisté avant en base de données
     $em->flush();
+    
+    die ('annonce bien créée');
 }
 }
