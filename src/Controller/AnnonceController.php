@@ -15,7 +15,7 @@ class AnnonceController extends AbstractController
     /**
  * @Route("/annonce/new")
  */
-public function new(ManagerRegistry $doctrine){
+    public function new(ManagerRegistry $doctrine){
     $annonce = new Annonce();
     $annonce
         ->setTitle('Ma collection de canard vivant')
