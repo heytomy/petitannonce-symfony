@@ -35,6 +35,7 @@ class AnnonceController extends AbstractController
         ->setStatus(Annonce::STATUS_BAD)
         ->setSold(false)
         ->setCreatedAt(new DateTime())
+        ->setSlug('Vends Super Canard trouvé en boulangerie-pâtisserie') 
         ;
 
     // On récupère l'EntityManager 
@@ -61,25 +62,20 @@ class AnnonceController extends AbstractController
 
     /**
      * @Route(
-    *  "/annonce/{slug}-{id}", 
-    *  requirements={"slug": "[a-z0-9\-]*", "id": "\d+"}
-     * )
-     * @return Response
+     *  "/annonces/{slug}-{id}", 
+     *  requirements={"slug": "[a-z0-9\-]*", "id": "\d+"}
+    * )
+    * @return Response
     */
-    public function showBySlug(string $slug, int $id, AnnonceRepository $annonceRepository): Response{
-    $annonce = $annonceRepository->findOneBy([
-        'slug' => $slug,
-        'id' => $id
-    ]);
-
-    if (!$annonce) {
-        return $this->createNotFoundException();
-    }
+    public function showBySlug(Annonce $annonce, $slug): Response{
+    //$annonce = $this->annonceRepository->find($id);
 
     return $this->render('annonce/show.html.twig', [
-        'annonce' => $annonce,
+        'current_menu' => 'app_annonce_index',
+        'annonce' => $annonce, // Symfony fait le find à notre place grâce à l'injection et l'id
     ]);
 }
+
 }
 
     

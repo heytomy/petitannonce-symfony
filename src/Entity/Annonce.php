@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
 
 #[ORM\Entity(repositoryClass: AnnonceRepository::class)]
+
 class Annonce
 {
     const STATUS_VERY_BAD  = 0;
@@ -38,6 +39,9 @@ class Annonce
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
 
     public function getId(): ?int{
 
@@ -131,6 +135,10 @@ class Annonce
     return $this;
 }
 
+    public function prePersist(){
+    $this->createdAt = new \DateTime();
+    $this->slug = (new Slugify())->slugify($this->title);
 }
-    
 
+
+}
