@@ -8,10 +8,10 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\AnnonceRepository;
+use Symfony\Component\HttpFoundation\Response;
 
 class AnnonceController extends AbstractController
 {
-
     public function index(AnnonceRepository $annonceRepository)
     {
         $annonces = $annonceRepository->findAllNotSold();
@@ -46,5 +46,40 @@ class AnnonceController extends AbstractController
     
     die ('Annonce bien créée');
 }
+    public function show(int $id, AnnonceRepository $annonceRepository): Response{
+
+    $annonce = $annonceRepository->find($id);
+
+    if (!$annonce) {
+        return $this->createNotFoundException();
+    }
+    return $this->render('annonce/show.html.twig', [
+        'annonce' => $annonce,
+    ]);
+
 }
+
+    /**
+     * @Route(
+    *  "/annonce/{slug}-{id}", 
+    *  requirements={"slug": "[a-z0-9\-]*", "id": "\d+"}
+     * )
+     * @return Response
+    */
+    public function showBySlug(string $slug, int $id, AnnonceRepository $annonceRepository): Response{
+    $annonce = $annonceRepository->findOneBy([
+        'slug' => $slug,
+        'id' => $id
+    ]);
+
+    if (!$annonce) {
+        return $this->createNotFoundException();
+    }
+
+    return $this->render('annonce/show.html.twig', [
+        'annonce' => $annonce,
+    ]);
+}
+}
+
     

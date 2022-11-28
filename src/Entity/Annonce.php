@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\AnnonceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Cocur\Slugify\Slugify;
 
 #[ORM\Entity(repositoryClass: AnnonceRepository::class)]
 class Annonce
@@ -114,6 +115,22 @@ class Annonce
 
         return $this;
     }
+
+    public function getSlug(): ?string{
+    if (!$this->slug) {
+        $this->setSlug($this->title);
+    }
+    return $this->slug;
+}
+
+    public function setSlug(string $slug): self{
+        
+    $slugify = new Slugify();
+    $this->slug = $slugify->slugify($slug);
+
+    return $this;
+}
+
 }
     
 
