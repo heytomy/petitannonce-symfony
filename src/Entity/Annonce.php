@@ -38,87 +38,82 @@ class Annonce
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
-    public function getId(): ?int
-    {
+    public function getId(): ?int{
+
         return $this->id;
     }
 
-    public function getTitle(): ?string
-    {
+    public function getTitle(): ?string{
+
         return $this->title;
     }
 
-    public function setTitle(string $title): self
-    {
+    public function setTitle(string $title): self{
+
         $this->title = $title;
 
         return $this;
     }
 
-    public function getDescription(): ?string
-    {
+    public function getDescription(): ?string{
+
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
-    {
+    public function setDescription(?string $description): self{
+
         $this->description = $description;
 
         return $this;
     }
 
-    public function getPrice(): ?int
-    {
+    public function getPrice(): ?int{
+
         return $this->price;
     }
 
-    public function setPrice(int $price): self
-    {
+    public function setPrice(int $price): self{
+        
         $this->price = $price;
 
         return $this;
     }
 
-    public function isSold(): ?bool
-    {
+    public function isSold(): ?bool{
+        
         return $this->sold;
     }
 
-    public function setSold(bool $sold): self
-    {
+    public function setSold(bool $sold): self{
+        
         $this->sold = $sold;
 
         return $this;
     }
 
-    public function getStatus(): ?int
-    {
+    public function getStatus(): ?int{
+        
         return $this->status;
     }
 
-    public function setStatus(int $status): self
-    {
+    public function setStatus(int $status): self{
+        
         $this->status = $status;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
+    public function getCreatedAt(): ?\DateTimeInterface{
+        
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
+    public function setCreatedAt(\DateTimeInterface $createdAt): self{
+        
         $this->createdAt = $createdAt;
 
         return $this;
     }
-
-    public function __construct()
-    
-    {
-    $this->createdAt = new \DateTime();
-    }
-
 }
+    
+
