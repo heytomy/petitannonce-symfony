@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
-use DateTime;
 use App\Entity\Annonce;
 use App\Repository\AnnonceRepository;
-use Doctrine\Persistence\ManagerRegistry; 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Form\AnnonceType;
 
 class AnnonceController extends AbstractController
 {
@@ -23,42 +24,40 @@ class AnnonceController extends AbstractController
     }
     
     /**
-    * @Route("/annonce/new", name="new_annonce")
-    */
+     * @Route("/annonce/new")
+     *
+     * @return void
+     */
+    public function new(Request $request, EntityManagerInterface $em)
+    {
+        $annonce = new Annonce();
 
-    public function new(ManagerRegistry $doctrine){
-    $annonce = new Annonce();
-    $annonce
-        ->setTitle('Ceci est canard')
-        ->setDescription('Vends car plus d\'utilité')
-        ->setPrice(10)
-        ->setStatus(Annonce::STATUS_BAD)
-        ->setSold(false)
-        ->setCreatedAt(new DateTime())
-        ->setSlug('sacré cannard') 
-        ;
+        $form = $this->createForm(AnnonceType::class, $annonce);
+        $form->handleRequest($request);
 
-    // On récupère l'EntityManager 
-    $em = $doctrine->getManager();
-    // On « persiste » l'entité
-    $em->persist($annonce);
-    // On envoie tout ce qui a été persisté avant en base de données
-    $em->flush();
-    
-    die ('Annonce bien créée');
-}
-    public function show(int $id, AnnonceRepository $annonceRepository): Response{
-
-    $annonce = $annonceRepository->find($id);
-
-    if (!$annonce) {
-        return $this->createNotFoundException();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($annonce);
+            $em->flush();
+            return $this->redirectToRoute('app_annonce_index');
+        }
+            
+        return $this->render('annonce/new.html.twig', [
+            'annonce' => $annonce,
+            'form' => $form->createView()
+        ]);
     }
-    return $this->render('annonce/show.html.twig', [
-        'annonce' => $annonce,
-    ]);
 
-}
+    public function show(int $id, AnnonceRepository $annonceRepository): Response
+    {
+        $annonce = $annonceRepository->find($id);
+
+        if (!$annonce) {
+            return $this->createNotFoundException();
+        }
+        return $this->render('annonce/show.html.twig', [
+            'annonce' => $annonce,
+        ]);
+    }
 
     /**
      * @Route(
@@ -67,14 +66,13 @@ class AnnonceController extends AbstractController
     * )
     * @return Response
     */
-    public function showBySlug(Annonce $annonce, $slug): Response{
-    //$annonce = $this->annonceRepository->find($id);
-
-    return $this->render('annonce/show.html.twig', [
-        'current_menu' => 'app_annonce_index',
-        'annonce' => $annonce, // Symfony fait le find à notre place grâce à l'injection et l'id
-    ]);
-}
+    public function showBySlug(Annonce $annonce, $slug): Response
+    {
+        return $this->render('annonce/show.html.twig', [
+            'current_menu' => 'app_annonce_index',
+            'annonce' => $annonce, // Symfony fait le find à notre place grâce à l'injection et l'id
+        ]);
+    }
 
 }
 

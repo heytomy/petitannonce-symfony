@@ -28,7 +28,7 @@ class AnnonceController extends AbstractController
         ]);
     }
 
-     /**
+    /**
      * @Route("/annonce/{id}/edit", methods={"POST", "GET"})
      */
     public function edit(Annonce $annonce, Request $request, EntityManagerInterface $em)
@@ -40,12 +40,23 @@ class AnnonceController extends AbstractController
             $em->flush();
             return $this->redirectToRoute('app_admin_annonce_index');
         }
-            
+
         return $this->render('admin/annonce/edit.html.twig', [
             'annonce' => $annonce,
             'form' => $form->createView()
         ]);
     }
 
+    /**
+     * @Route("/annonce/{id}", methods="DELETE")
+     */
 
+    public function delete(Annonce $annonce, EntityManagerInterface $em, Request $request)
+    {
+        if ($this->isCsrfTokenValid('delete' . $annonce->getId(), $request->get('_token'))) {
+            $em->remove($annonce);
+            $em->flush();
+        }
+        return $this->redirectToRoute('admin_annonce_index');
+    }
 }

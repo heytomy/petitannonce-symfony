@@ -13,13 +13,21 @@
                 </thead>
                 <tbody>
                     {% for annonce in annonces %}
-                        <tr>
+                    <tr>
                             <td>{{ annonce.title }}</td>
-                            <td>
-                                <a href="{{ path('app_admin_annonce_edit', {id: annonce.id}) }}" class="btn btn-secondary">Éditer</a>
-                            </td>
-                        </tr>
+                        <td>
+                            <a href="{{ path('app_admin_annonce_edit', {id: annonce.id}) }}" class="btn btn-secondary">Éditer</a>
+                        <form method="post" action="{{ path('app_admin_annonce_delete', {id: annonce.id}) }}">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ annonce.id) }}">
+                            <button class="btn btn-danger">Supprimer</button>
+                        </form>
+
+                        </td>
+                    </tr>
+
                     {% endfor %}
+                    
                 </tbody>
             </table>
             

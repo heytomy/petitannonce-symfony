@@ -120,19 +120,20 @@ class Annonce
         return $this;
     }
 
+    public function setSlug(string $slug): self{
+        
+        $slugify = new Slugify();
+        $this->slug = $slugify->slugify($slug);
+    
+        return $this;
+    }
+
     public function getSlug(): ?string{
     if (!$this->slug) {
         $this->setSlug($this->title);
     }
+
     return $this->slug;
-}
-
-    public function setSlug(string $slug): self{
-        
-    $slugify = new Slugify();
-    $this->slug = $slugify->slugify($slug);
-
-    return $this;
 }
     /**
      * @ORM\PrePersist

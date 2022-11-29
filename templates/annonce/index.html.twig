@@ -33,7 +33,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
                                 <a href="{{ path('app_annonce_showbyslug', {id: annonce.id, slug: annonce.slug}) }}" class="btn btn-sm btn-outline-secondary" type="button">View</a>
-                                <a class="btn btn-sm btn-outline-secondary" type="button">Edit</a>
+                                <a href="{{ path('app_admin_annonce_edit', {id: annonce.id}) }}" class="btn btn-sm btn-outline-secondary" type="button">Edit</a>
                             </div>
                             <small class="text-muted">{{ annonce.price }}€</small>
                         </div>
