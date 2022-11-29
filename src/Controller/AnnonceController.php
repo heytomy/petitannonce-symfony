@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use DateTime;
 use App\Entity\Annonce;
+use App\Repository\AnnonceRepository;
 use Doctrine\Persistence\ManagerRegistry; 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Repository\AnnonceRepository;
 use Symfony\Component\HttpFoundation\Response;
 
 class AnnonceController extends AbstractController
@@ -29,13 +29,13 @@ class AnnonceController extends AbstractController
     public function new(ManagerRegistry $doctrine){
     $annonce = new Annonce();
     $annonce
-        ->setTitle('Ma collection de canard vivant')
+        ->setTitle('Ceci est canard')
         ->setDescription('Vends car plus d\'utilité')
         ->setPrice(10)
         ->setStatus(Annonce::STATUS_BAD)
         ->setSold(false)
         ->setCreatedAt(new DateTime())
-        ->setSlug('Vends Super Canard trouvé en boulangerie-pâtisserie') 
+        ->setSlug('sacré cannard') 
         ;
 
     // On récupère l'EntityManager 

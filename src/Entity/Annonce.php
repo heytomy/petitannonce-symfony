@@ -134,11 +134,21 @@ class Annonce
 
     return $this;
 }
+    /**
+     * @ORM\PrePersist
+     */
 
     public function prePersist(){
     $this->createdAt = new \DateTime();
     $this->slug = (new Slugify())->slugify($this->title);
+    $this->updatedAt = new \DateTime();
 }
 
-
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate()
+    {
+        $this->updatedAt = new \DateTime();
+    }
 }

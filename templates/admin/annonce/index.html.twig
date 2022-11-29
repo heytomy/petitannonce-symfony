@@ -1,0 +1,28 @@
+{% extends '_layout/sidebar.html.twig' %}
+{% block title %}Gérer les annonces!{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>Gérer les annonces</h1>
+        <div class="row">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for annonce in annonces %}
+                        <tr>
+                            <td>{{ annonce.title }}</td>
+                            <td>
+                                <a href="{{ path('app_admin_annonce_edit', {id: annonce.id}) }}" class="btn btn-secondary">Éditer</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+{% endblock %}
