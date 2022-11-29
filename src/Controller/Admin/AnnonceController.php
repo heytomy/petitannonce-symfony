@@ -31,16 +31,18 @@ class AnnonceController extends AbstractController
     /**
      * @Route("/annonce/{id}/edit", methods={"POST", "GET"})
      */
-    public function edit(Annonce $annonce, Request $request, EntityManagerInterface $em)
+    public function edit(Annonce $annonce, EntityManagerInterface $em, Request $request)
     {
         $form = $this->createForm(AnnonceType::class, $annonce);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
+            // ajout du message flash
+            $this->addFlash('success', 'Annonce modifiée avec succès');
             return $this->redirectToRoute('app_admin_annonce_index');
         }
-
+        
         return $this->render('admin/annonce/edit.html.twig', [
             'annonce' => $annonce,
             'form' => $form->createView()
@@ -57,6 +59,6 @@ class AnnonceController extends AbstractController
             $em->remove($annonce);
             $em->flush();
         }
-        return $this->redirectToRoute('admin_annonce_index');
+        return $this->redirectToRoute('app_admin_annonce_index');
     }
 }

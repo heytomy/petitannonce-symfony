@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
 
 #[ORM\Entity(repositoryClass: AnnonceRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 
 class Annonce
 {
@@ -128,26 +129,24 @@ class Annonce
         return $this;
     }
 
-    public function getSlug(): ?string{
-    if (!$this->slug) {
-        $this->setSlug($this->title);
+    #[ORM\PrePersist]
+    public function prePersist()
+    {
+        $this->createdAt = new \DateTime();
+        $this->slug = (new Slugify())->slugify($this->title);
+        $this->updatedAt = new \DateTime();
     }
 
-    return $this->slug;
-}
-    /**
-     * @ORM\PrePersist
-     */
+    public function getSlug(): ?string
+    {
+        if (!$this->slug) {
+            $this->setSlug($this->title);
+        }
 
-    public function prePersist(){
-    $this->createdAt = new \DateTime();
-    $this->slug = (new Slugify())->slugify($this->title);
-    $this->updatedAt = new \DateTime();
-}
+        return $this->slug;
+    }
 
-    /**
-     * @ORM\PreUpdate
-     */
+    #[ORM\PreUpdate]
     public function preUpdate()
     {
         $this->updatedAt = new \DateTime();
