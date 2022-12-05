@@ -1,0 +1,43 @@
+{% extends '_layout/sidebar.html.twig' %}
+{% block title %}Gérer les annonces!
+{% endblock %}
+{% block content %}
+	<div class="container">
+		<h1>Gérer les annonces</h1>
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-success">
+				{{ message }}
+			</div>
+		{% endfor %}
+
+		<div class="row">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Titre</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for annonce in annonces %}
+						<tr>
+							<td>{{ annonce.title }}</td>
+							<td>
+								<img class="img-fluid" src="{% if annonce.imageUrl is not null %}{{ annonce.imageUrl }}{% endif %}">
+								<a href="{{ path('app_admin_annonce_edit', {id: annonce.id}) }}" class="btn btn-secondary">Éditer</a>
+								<form method="post" action="{{ path('app_admin_annonce_delete', {id: annonce.id}) }}" onsubmit="return confirm('Êtes vous vraiment sûr ?')">
+									<input type="hidden" name="_method" value="DELETE">
+									<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ annonce.id) }}">
+									<button class="btn btn-danger">Supprimer</button>
+								</form>
+							</td>
+						</tr>
+
+					{% endfor %}
+
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+{% endblock %}
