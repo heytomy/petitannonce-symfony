@@ -57,6 +57,16 @@ class Annonce
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Url(
+     *      protocols = {"http", "https"}
+     * )
+     */
+    private $imageUrl;
+
+
     public function getId(): ?int
     {
 
@@ -178,4 +188,17 @@ class Annonce
     {
         $this->updatedAt = new \DateTime();
     }
+
+    public function getImageUrl(): ?string
+    {
+        return $this->imageUrl;
+    }
+
+    public function setImageUrl(?string $imageUrl): self
+    {
+        $this->imageUrl = $imageUrl;
+
+        return $this;
+    }
+
 }

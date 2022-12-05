@@ -18,6 +18,9 @@ class AnnonceType extends AbstractType
             ->add('description')
             ->add('price')
             ->add('sold')
+            ->add('title')
+            ->add('description')
+            ->add('imageUrl')
             ->add('status', ChoiceType::class, [
                 'choices' => [
                     'Très mauvais' => Annonce::STATUS_VERY_BAD,

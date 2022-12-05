@@ -6,7 +6,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-8">
-                    <img class="img-fluid" src="https://media.giphy.com/media/utp2JUuE3znt6/giphy.gif">
+                    <img class="img-fluid" src="{% if annonce.imageUrl is not null %}{{ annonce.imageUrl }}{% endif %}">
                 </div>
                 <div class="col-md-4">
                     <div class="card mb-4 shadow-sm">

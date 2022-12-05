@@ -23,6 +23,7 @@
 						<tr>
 							<td>{{ annonce.title }}</td>
 							<td>
+								<img class="img-fluid" src="{% if annonce.imageUrl is not null %}{{ annonce.imageUrl }}{% endif %}">
 								<a href="{{ path('app_admin_annonce_edit', {id: annonce.id}) }}" class="btn btn-secondary">Éditer</a>
 								<form method="post" action="{{ path('app_admin_annonce_delete', {id: annonce.id}) }}" onsubmit="return confirm('Êtes vous vraiment sûr ?')">
 									<input type="hidden" name="_method" value="DELETE">
