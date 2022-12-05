@@ -66,6 +66,10 @@ class Annonce
      */
     private $imageUrl;
 
+    #[ORM\ManyToOne(inversedBy: 'annonces')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
 
     public function getId(): ?int
     {
@@ -197,6 +201,18 @@ class Annonce
     public function setImageUrl(?string $imageUrl): self
     {
         $this->imageUrl = $imageUrl;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

@@ -14,29 +14,30 @@ use Knp\Component\Pager\PaginatorInterface;
 
 class AnnonceController extends AbstractController
 {
+
     public function index(Request $request, AnnonceRepository $annonceRepository): Response
     {
         $totalAnnonce = $annonceRepository->findTotalNotSold();
         $perPage = 21;
-        $totalPages = ceil($totalAnnonce/$perPage);
-        
+        $totalPages = ceil($totalAnnonce / $perPage);
+
         $page = $request->get('page');
-        
+
         if ($page === null || $page > $totalPages || $page < 1) {
             $page = 1;
         }
         $annonces = $annonceRepository->findAllNotSoldPaginate($page, $perPage);
-        //$annonces = $this->annonceRepository->findAllNotSold();
+        $annonces = $annonceRepository->findAllNotSold();
 
         return $this->render('annonce/index.html.twig', [
             'current_menu' => 'app_annonce_index',
             'annonces' => $annonces,
             'total_pages' => $totalPages,
-            'page' => $page
+            'page' => $page,
         ]);
     }
 
-    
+
     /**
      * @Route("/annonce/new")
      *
@@ -44,6 +45,7 @@ class AnnonceController extends AbstractController
      */
     public function new(Request $request, EntityManagerInterface $em)
     {
+
         $annonce = new Annonce();
 
         $form = $this->createForm(AnnonceType::class, $annonce);
@@ -55,7 +57,7 @@ class AnnonceController extends AbstractController
             $em->flush();
             return $this->redirectToRoute('app_admin_annonce_index');
         }
-            
+
         return $this->render('annonce/new.html.twig', [
             'annonce' => $annonce,
             'form' => $form->createView()
@@ -78,9 +80,9 @@ class AnnonceController extends AbstractController
      * @Route(
      *  "/annonces/{slug}-{id}", 
      *  requirements={"slug": "[a-z0-9\-]*", "id": "\d+"}
-    * )
-    * @return Response
-    */
+     * )
+     * @return Response
+     */
     public function showBySlug(Annonce $annonce, $slug): Response
     {
         return $this->render('annonce/show.html.twig', [
@@ -89,4 +91,3 @@ class AnnonceController extends AbstractController
         ]);
     }
 }
-    
