@@ -6,10 +6,16 @@ use App\Repository\AnnonceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: AnnonceRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\AnnonceRepository")
+ * @UniqueEntity("title")
+ */
 class Annonce
 {
     const STATUS_VERY_BAD  = 0;
@@ -17,7 +23,7 @@ class Annonce
     const STATUS_GOOD      = 2;
     const STATUS_VERY_GOOD = 3;
     const STATUS_PERFECT   = 4;
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -27,7 +33,14 @@ class Annonce
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
+        /**
+     * @ORM\Column(type="text", nullable=true)
+     * @Assert\Length(
+     *      min = 40,
+     *      minMessage = "La description doit faire plus de {{ limit }} charactères",
+     * )
+     */
+    private $description;
 
     #[ORM\Column]
     private ?int $price = null;
@@ -44,88 +57,102 @@ class Annonce
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
-    public function getId(): ?int{
+    public function getId(): ?int
+    {
 
         return $this->id;
     }
 
-    public function getTitle(): ?string{
+    public function getTitle(): ?string
+    {
 
         return $this->title;
     }
 
-    public function setTitle(string $title): self{
+    public function setTitle(string $title): self
+    {
 
         $this->title = $title;
 
         return $this;
     }
 
-    public function getDescription(): ?string{
+    public function getDescription(): ?string
+    {
 
         return $this->description;
     }
 
-    public function setDescription(?string $description): self{
+    public function setDescription(?string $description): self
+    {
 
         $this->description = $description;
 
         return $this;
     }
 
-    public function getPrice(): ?int{
+    public function getPrice(): ?int
+    {
 
         return $this->price;
     }
 
-    public function setPrice(int $price): self{
-        
+    public function setPrice(int $price): self
+    {
+
         $this->price = $price;
 
         return $this;
     }
 
-    public function isSold(): ?bool{
-        
+    public function isSold(): ?bool
+    {
+
         return $this->sold;
     }
 
-    public function setSold(bool $sold): self{
-        
+    public function setSold(bool $sold): self
+    {
+
         $this->sold = $sold;
 
         return $this;
     }
 
-    public function getStatus(): ?int{
-        
+    public function getStatus(): ?int
+    {
+
         return $this->status;
     }
 
-    public function setStatus(int $status): self{
-        
+    public function setStatus(int $status): self
+    {
+
         $this->status = $status;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface{
-        
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self{
-        
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function setSlug(string $slug): self{
-        
+    public function setSlug(string $slug): self
+    {
+
         $slugify = new Slugify();
         $this->slug = $slugify->slugify($slug);
-    
+
         return $this;
     }
 

@@ -43,4 +43,10 @@
         {% endfor %}
         </div>
     </div>
+
+{{ include("_inc/pagination.html.twig", {
+    total_pages: total_pages,
+    current_page: page
+}) }}
+
 {% endblock %}

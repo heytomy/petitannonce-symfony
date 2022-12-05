@@ -10,18 +10,32 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Form\AnnonceType;
+use Knp\Component\Pager\PaginatorInterface;
 
 class AnnonceController extends AbstractController
 {
-    public function index(AnnonceRepository $annonceRepository)
+    public function index(Request $request, AnnonceRepository $annonceRepository): Response
     {
-        $annonces = $annonceRepository->findAllNotSold();
-    
+        $totalAnnonce = $annonceRepository->findTotalNotSold();
+        $perPage = 21;
+        $totalPages = ceil($totalAnnonce/$perPage);
+        
+        $page = $request->get('page');
+        
+        if ($page === null || $page > $totalPages || $page < 1) {
+            $page = 1;
+        }
+        $annonces = $annonceRepository->findAllNotSoldPaginate($page, $perPage);
+        //$annonces = $this->annonceRepository->findAllNotSold();
+
         return $this->render('annonce/index.html.twig', [
             'current_menu' => 'app_annonce_index',
             'annonces' => $annonces,
+            'total_pages' => $totalPages,
+            'page' => $page
         ]);
     }
+
     
     /**
      * @Route("/annonce/new")
@@ -74,7 +88,5 @@ class AnnonceController extends AbstractController
             'annonce' => $annonce, // Symfony fait le find à notre place grâce à l'injection et l'id
         ]);
     }
-
 }
-
     

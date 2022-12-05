@@ -41,31 +41,6 @@ class AnnonceRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Annonce[] Returns an array of Annonce objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Annonce
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
-
    /**
     * @return Annonce[]
     */
@@ -97,5 +72,35 @@ class AnnonceRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->andWhere('a.sold = false')
         ;
+    }
+
+    /**
+     * @return Query
+     */
+    public function findAllNotSoldQuery()
+    {
+        return $this->findNotSoldQuery()
+            ->getQuery();
+    }
+
+    public function findAllNotSoldPaginate($page = 0, $perPage = 10)
+    {
+        return $this->findNotSoldQuery()
+            ->setFirstResult(($page-1) * $perPage)
+            ->setMaxResults($perPage)
+            ->orderBy('a.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return mixed The scalar result, or NULL if the query returned no result.
+     */
+    public function findTotalNotSold()
+    {
+        return $this->findNotSoldQuery()
+            ->select('COUNT(a.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }
