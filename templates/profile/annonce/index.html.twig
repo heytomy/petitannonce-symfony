@@ -6,7 +6,7 @@
     <h1 class="h2">Dashboard</h1>
 </div>
 <div class="row">
-    <a href="#" class="btn btn-primary">Créer une annonce</a>
+    <a href="{{'/annonce/new'}}" class="btn btn-primary">Créer une annonce</a>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -15,14 +15,14 @@
             </tr>
         </thead>
         <tbody>
-            {% for annonce in annonces %}
+            {% for annonce in annonce %}
             <tr>
                 <td>
                     {{ annonce.title }}
                 </td>
                 <td>
-                    <a href="#" class="btn btn-secondary">Éditer</a>
-                    <form method="post" action="#" onsubmit="return confirm('Êtes vous vraiment sûr ?')">
+                    <a href="{{ path('app_annonce_edit', {id: annonce.id}) }}" class="btn btn-secondary">Éditer</a>
+                    <form method="post" action="{{ path('app_annonce_delete', {id: annonce.id}) }}" onsubmit="return confirm('Êtes vous vraiment sûr ?')">
                         <input name="_method" type="hidden" value="DELETE">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ annonce.id) }}">
                         <button class="btn btn-danger">Supprimer</button>

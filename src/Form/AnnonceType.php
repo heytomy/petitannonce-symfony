@@ -6,11 +6,20 @@ use App\Entity\Annonce;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class AnnonceType extends AbstractType
 {
+    
+    private $authorizationChecker;
+
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker)
+    {
+        $this->authorizationChecker = $authorizationChecker;
+    }
+    
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -34,6 +43,15 @@ class AnnonceType extends AbstractType
     ->add('createdAt',DateType::class, [
         'widget' => 'single_text', //tu peux lire https://symfony.com/doc/current/reference/forms/types/date.html#rendering-a-single-html5-text-box
     ]);
+
+    if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+        $builder
+            ->add('sold')
+            ->add('createdAt', DateType::class, [
+                'widget' => 'single_text',
+            ])
+            ->add('slug');
+    }
 }
 
     public function configureOptions(OptionsResolver $resolver): void

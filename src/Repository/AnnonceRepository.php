@@ -6,6 +6,7 @@ use App\Entity\Annonce;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @extends ServiceEntityRepository<Annonce>
@@ -64,24 +65,14 @@ class AnnonceRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return QueryBuilder
-     */
-    private function findNotSoldQuery(): QueryBuilder
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.sold = false')
-        ;
-    }
-
-    /**
-     * @return Query
-     */
-    public function findAllNotSoldQuery()
-    {
-        return $this->findNotSoldQuery()
-            ->getQuery();
-    }
+    // /**
+    //  * @return Query
+    //  */
+    // public function findAllNotSoldQuery()
+    // {
+    //     return $this->findNotSoldQuery()
+    //         ->getQuery();
+    // }
 
     public function findAllNotSoldPaginate($page = 0, $perPage = 10)
     {
@@ -103,4 +94,22 @@ class AnnonceRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+     /**
+     * @return QueryBuilder
+     */
+    private function findNotSoldQuery(): QueryBuilder
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.sold = false')
+        ;
+    }
+    
+    public function findAllNotSoldQuery()
+    {
+        return $this->findNotSoldQuery()
+            ->getQuery()
+            ;
+    }
+
 }

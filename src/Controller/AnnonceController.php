@@ -13,30 +13,20 @@ use App\Form\AnnonceType;
 use Knp\Component\Pager\PaginatorInterface;
 
 class AnnonceController extends AbstractController
-{
-
-    public function index(Request $request, AnnonceRepository $annonceRepository): Response
+{  
+    #[Route('/annonces', name: 'app_annonces')]
+    public function index(Request $request, PaginatorInterface $paginator, AnnonceRepository $annonceRepository): Response
     {
-        $totalAnnonce = $annonceRepository->findTotalNotSold();
-        $perPage = 21;
-        $totalPages = ceil($totalAnnonce / $perPage);
-
-        $page = $request->get('page');
-
-        if ($page === null || $page > $totalPages || $page < 1) {
-            $page = 1;
-        }
-        $annonces = $annonceRepository->findAllNotSoldPaginate($page, $perPage);
-        $annonces = $annonceRepository->findAllNotSold();
+        $annonces = $paginator->paginate(
+            $annonceRepository->findAllNotSoldQuery(),
+            $request->query->getInt('page', 1),
+            6
+        );
 
         return $this->render('annonce/index.html.twig', [
-            'current_menu' => 'app_annonce_index',
             'annonces' => $annonces,
-            'total_pages' => $totalPages,
-            'page' => $page,
         ]);
     }
-
 
     /**
      * @Route("/annonce/new")
@@ -47,7 +37,7 @@ class AnnonceController extends AbstractController
     {
 
         $annonce = new Annonce();
-
+        $annonce->setUser($this->getUser());
         $form = $this->createForm(AnnonceType::class, $annonce);
         $form->handleRequest($request);
 
@@ -55,13 +45,47 @@ class AnnonceController extends AbstractController
 
             $em->persist($annonce);
             $em->flush();
-            return $this->redirectToRoute('app_admin_annonce_index');
+            return $this->redirectToRoute('app_profile_annonce_index');
         }
 
         return $this->render('annonce/new.html.twig', [
+            'curent_page' => $annonce,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/annonce/{id}/edit", methods={"POST", "GET"})
+     */
+    public function edit(Annonce $annonce, EntityManagerInterface $em, Request $request)
+    {
+        $form = $this->createForm(AnnonceType::class, $annonce);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+            // ajout du message flash
+            $this->addFlash('success', 'Annonce modifiée avec succès');
+            return $this->redirectToRoute('app_profile_annonce_index');
+        }
+
+        return $this->render('annonce/edit.html.twig', [
             'annonce' => $annonce,
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/annonce/{id}", methods="DELETE")
+     */
+
+    public function delete(Annonce $annonce, EntityManagerInterface $em, Request $request)
+    {
+        if ($this->isCsrfTokenValid('delete' . $annonce->getId(), $request->get('_token'))) {
+            $em->remove($annonce);
+            $em->flush();
+        }
+        return $this->redirectToRoute('app_profile_annonce_index');
     }
 
     public function show(int $id, AnnonceRepository $annonceRepository): Response
@@ -89,5 +113,13 @@ class AnnonceController extends AbstractController
             'current_menu' => 'app_annonce_index',
             'annonce' => $annonce, // Symfony fait le find à notre place grâce à l'injection et l'id
         ]);
+    }
+
+    public function adminDashboard()
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        // or add an optional message - seen by developers
+        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'User tried to access a page without having ROLE_ADMIN');
     }
 }

@@ -9,6 +9,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\AnnonceType;
 use App\Repository\AnnonceRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 # note la route qui sera préfixée pour chaque route du contrôleur
 /**
@@ -35,14 +37,14 @@ class AnnonceController extends AbstractController
     {
         $form = $this->createForm(AnnonceType::class, $annonce);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
             // ajout du message flash
             $this->addFlash('success', 'Annonce modifiée avec succès');
             return $this->redirectToRoute('app_admin_annonce_index');
-        }
-        
+        }  
+
         return $this->render('admin/annonce/edit.html.twig', [
             'annonce' => $annonce,
             'form' => $form->createView()
@@ -61,4 +63,25 @@ class AnnonceController extends AbstractController
         }
         return $this->redirectToRoute('app_admin_annonce_index');
     }
+}
+
+/**
+ * Require ROLE_ADMIN for *every* controller method in this class.
+ *
+ * @IsGranted("ROLE_ADMIN")
+ */
+class AdminController extends AbstractController
+{
+     /**
+      * Require ROLE_ADMIN for only this controller method.
+      *
+      * @IsGranted("ROLE_ADMIN")
+      */
+      public function adminDashboard()
+      {
+          $this->denyAccessUnlessGranted('ROLE_ADMIN');
+  
+          // or add an optional message - seen by developers
+          $this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'User tried to access a page without having ROLE_ADMIN');
+      }
 }

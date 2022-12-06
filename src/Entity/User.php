@@ -155,7 +155,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Annonce>
+     * @return Collection<int, Annonces>
      */
     public function getAnnonces(): Collection
     {
